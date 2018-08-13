@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import com.amirely.elite.bakit.models.Recipe;
 import com.amirely.elite.bakit.models.RecipeIngredient;
 import com.amirely.elite.bakit.models.RecipeStep;
+import com.amirely.elite.bakit.network.NetworkService;
+import com.amirely.elite.bakit.network.RecipeApi;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -35,6 +37,8 @@ import java.util.Objects;
 public class RecipeStepDetailsFragment extends Fragment {
     //    private OnFragmentInteractionListener mListener;
 
+//    RecipeApi recipeApi;
+
     SimpleExoPlayerView simpleExoPlayerView;
 
     ExoPlayer exoPlayer;
@@ -45,6 +49,7 @@ public class RecipeStepDetailsFragment extends Fragment {
 
     public RecipeStepDetailsFragment() {
         // Required empty public constructor
+//        recipeApi = NetworkService.create(RecipeApi.class);
     }
 
     public static RecipeStepDetailsFragment newInstance() {
