@@ -32,8 +32,6 @@ import retrofit2.Response;
 
 public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeClickListener{
 
-
-
     List<Recipe> recipeList;
 
     RecyclerView recipeRecyclerView;
@@ -63,16 +61,10 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
 
         recipeList = new ArrayList<>();
 
-
-//        List<Recipe> recipeList = (List<Recipe>) recipeApi.getRecipes();
-
         Log.d("LIST OF RECIPES", String.valueOf(recipeList.size()));
-
-//        populateRecipeList();
 
         fetchRecipeList();
 
@@ -99,18 +91,15 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
             @Override
             public void onResponse(@NonNull Call<Recipe[]> call, @NonNull Response<Recipe[]> response) {
                 Recipe[] recipeResults = response.body();
-                List<Recipe> recivedRecipeList = new ArrayList<>(Arrays.asList(Objects.requireNonNull(recipeResults)));
+                List<Recipe> receivedRecipeList = new ArrayList<>(Arrays.asList(Objects.requireNonNull(recipeResults)));
 
+                updateAdapter(receivedRecipeList);
 
-                updateAdapter(recivedRecipeList);
-
-
-                Log.d("RESPONSE", String.valueOf(recivedRecipeList.size()));
+                Log.d("RESPONSE", String.valueOf(receivedRecipeList.size()));
             }
             @Override
             public void onFailure(@NonNull Call<Recipe[]> call, Throwable t) {
                 Log.d("RECIPES FRAGMENT 2", t.getMessage());
-//                presenter.onFailure(t);
             }
         });
     }
@@ -119,7 +108,6 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
         RecipeAdapter adapter = new RecipeAdapter(receivedRecipeList, this);
 
         recipeRecyclerView.swapAdapter(adapter, true);
-
     }
 
     @Override
@@ -143,18 +131,9 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
 
         navigator = new Navigator(manager);
 
-
-
-
-
         navigator.navigateTo(RecipeStepsFragment.newInstance(recipe.getSteps()));
 
     }
-
-    public FragmentManager getCustomFragmentManager() {
-        return getFragmentManager();
-    }
-
 
     public void goBack() {
         Objects.requireNonNull(getFragmentManager()).popBackStack();

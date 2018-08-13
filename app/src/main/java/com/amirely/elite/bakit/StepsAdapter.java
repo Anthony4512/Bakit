@@ -12,9 +12,15 @@ import java.util.List;
 public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHolder> {
 
     private List<RecipeStep> steps;
+    private OnStepClickListener onStepClickListener;
 
-    StepsAdapter(List<RecipeStep> steps) {
+    interface OnStepClickListener {
+        void onStepClicked(RecipeStep recipeStep);
+    }
+
+    StepsAdapter(List<RecipeStep> steps, OnStepClickListener listener) {
         this.steps = steps;
+        this.onStepClickListener = listener;
     }
 
     @NonNull
@@ -31,6 +37,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
         RecipeStep recipeStep = steps.get(position);
         holder.stepDescriptionTv.setText(recipeStep.getShortDescription());
         holder.stepNumber.setText(recipeStep.getId());
+        holder.recipeStep = recipeStep;
     }
 
     @Override
@@ -38,15 +45,22 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
         return steps == null ? 0 : steps.size();
     }
 
-    class StepsViewHolder extends RecyclerView.ViewHolder {
+    class StepsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView stepDescriptionTv;
         TextView stepNumber;
+        RecipeStep recipeStep;
 
         StepsViewHolder(View itemView) {
             super(itemView);
             stepDescriptionTv = itemView.findViewById(R.id.recipe_step_title_tv);
             stepNumber = itemView.findViewById(R.id.step_number_tv);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            onStepClickListener.onStepClicked(recipeStep);
         }
     }
 }
