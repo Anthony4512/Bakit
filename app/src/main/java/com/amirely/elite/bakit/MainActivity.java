@@ -23,9 +23,9 @@ public class MainActivity extends AppCompatActivity {
 
 //        manager.beginTransaction().replace(R.id.main_fragment_container, stepsFragment).addToBackStack(null).commit();
 
-//        manager.beginTransaction().replace(R.id.main_fragment_container, recipesFragment).addToBackStack(null).commit();
+        manager.beginTransaction().replace(R.id.main_fragment_container, recipesFragment).addToBackStack(null).commit();
 
-        manager.beginTransaction().replace(R.id.main_fragment_container, recipeStepDetailsFragment).addToBackStack(null).commit();
+//        manager.beginTransaction().replace(R.id.main_fragment_container, recipeStepDetailsFragment).addToBackStack(null).commit();
 
     }
 
