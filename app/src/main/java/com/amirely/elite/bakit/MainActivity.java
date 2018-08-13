@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager manager = getSupportFragmentManager();
         Fragment recipesFragment = RecipesFragment.newInstance();
 //        Fragment stepsFragment = RecipeStepsFragment.newInstance();
-        Fragment recipeStepDetailsFragment = RecipeStepDetailsFragment.newInstance();
+//        Fragment recipeStepDetailsFragment = RecipeStepDetailsFragment.newInstance();
 
 
 //        manager.beginTransaction().replace(R.id.main_fragment_container, stepsFragment).addToBackStack(null).commit();

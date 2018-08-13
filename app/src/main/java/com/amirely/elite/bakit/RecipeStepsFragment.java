@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,18 +18,23 @@ import com.amirely.elite.bakit.homepage.RecipesFragment;
 import com.amirely.elite.bakit.models.Recipe;
 import com.amirely.elite.bakit.models.RecipeIngredient;
 import com.amirely.elite.bakit.models.RecipeStep;
+import com.amirely.elite.bakit.utils.Navigator;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 
-public class RecipeStepsFragment extends Fragment {
+public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStepClickListener{
     //    private OnFragmentInteractionListener mListener;
 
     List<RecipeStep> stepList;
 
     RecyclerView recipeRecyclerView;
+
+    Navigator navigator;
+
+    FragmentManager manager;
 
     public RecipeStepsFragment() {
         // Required empty public constructor
@@ -56,7 +62,7 @@ public class RecipeStepsFragment extends Fragment {
         recipeRecyclerView = view.findViewById(R.id.recipe_steps_rv);
         LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext(), LinearLayoutManager.VERTICAL, false);
 
-        StepsAdapter stepsAdapter = new StepsAdapter(stepList);
+        StepsAdapter stepsAdapter = new StepsAdapter(stepList, this);
 
         recipeRecyclerView.setLayoutManager(layoutManager);
         recipeRecyclerView.setAdapter(stepsAdapter);
@@ -74,4 +80,13 @@ public class RecipeStepsFragment extends Fragment {
         super.onDetach();
     }
 
+    @Override
+    public void onStepClicked(RecipeStep recipeStep) {
+
+        manager = getFragmentManager();
+
+        navigator = new Navigator(manager);
+
+        navigator.navigateTo(RecipeStepDetailsFragment.newInstance(recipeStep));
+    }
 }

@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.amirely.elite.bakit.models.Recipe;
 import com.amirely.elite.bakit.models.RecipeIngredient;
@@ -35,25 +36,23 @@ import java.util.Objects;
 
 
 public class RecipeStepDetailsFragment extends Fragment {
-    //    private OnFragmentInteractionListener mListener;
-
-//    RecipeApi recipeApi;
 
     SimpleExoPlayerView simpleExoPlayerView;
 
     ExoPlayer exoPlayer;
 
-    String videoUri = "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffd974_-intro-creampie/-intro-creampie.mp4";
-
-    Uri mediaUri = Uri.parse(videoUri);
+    RecipeStep recipeStep;
 
     public RecipeStepDetailsFragment() {
-        // Required empty public constructor
-//        recipeApi = NetworkService.create(RecipeApi.class);
+
     }
 
-    public static RecipeStepDetailsFragment newInstance() {
-        return new RecipeStepDetailsFragment();
+    public static RecipeStepDetailsFragment newInstance(RecipeStep step) {
+        RecipeStepDetailsFragment fragment = new RecipeStepDetailsFragment();
+
+        fragment.recipeStep = step;
+
+        return fragment;
     }
 
     @Override
@@ -70,7 +69,14 @@ public class RecipeStepDetailsFragment extends Fragment {
 
         simpleExoPlayerView = view.findViewById(R.id.details_exoplayer);
 
-        initializeExoplayer(mediaUri);
+        initializeExoplayer(Uri.parse(recipeStep.getVideoURL()));
+
+        TextView stepTitle = view.findViewById(R.id.step_details_title);
+        TextView stepDetails = view.findViewById(R.id.step_details_description);
+
+
+        stepTitle.setText(recipeStep.getShortDescription());
+        stepDetails.setText(recipeStep.getDescription());
 
         return view;
     }
@@ -112,8 +118,4 @@ public class RecipeStepDetailsFragment extends Fragment {
         releasePlayer();
     }
 
-//    @Override
-//    public void onStepClicked(RecipeStep step) {
-//        Log.d("ON STEP CLICKED", step.getShortDescription() + " has been clicked");
-//    }
 }

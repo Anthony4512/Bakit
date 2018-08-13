@@ -44,6 +44,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/step_details_title"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Title of steps"
@@ -51,6 +52,7 @@
                             style="@style/Base.TextAppearance.AppCompat.Title"/>
 
                         <TextView
+                            android:id="@+id/step_details_description"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="This is going to be the description of the step" />
