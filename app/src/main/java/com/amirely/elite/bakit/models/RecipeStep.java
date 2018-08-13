@@ -1,4 +1,4 @@
-package com.amirely.elite.bakit;
+package com.amirely.elite.bakit.models;
 
 public class RecipeStep {
 

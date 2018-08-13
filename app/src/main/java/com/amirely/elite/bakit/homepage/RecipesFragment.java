@@ -1,7 +1,6 @@
 package com.amirely.elite.bakit.homepage;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -11,12 +10,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.amirely.elite.bakit.R;
-import com.amirely.elite.bakit.Recipe;
-import com.amirely.elite.bakit.RecipeIngredient;
-import com.amirely.elite.bakit.RecipeStep;
+import com.amirely.elite.bakit.models.Recipe;
+import com.amirely.elite.bakit.models.RecipeIngredient;
+import com.amirely.elite.bakit.models.RecipeStep;
 
 import java.util.ArrayList;
 import java.util.List;
