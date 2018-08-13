@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.amirely.elite.bakit.R;
-import com.amirely.elite.bakit.Recipe;
+import com.amirely.elite.bakit.models.Recipe;
 
 import java.util.List;
 
@@ -41,6 +41,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
         Recipe recipe = recipeList.get(position);
         holder.currentRecipe.setText(recipe.getName());
+        holder.recipe = recipe;
     }
 
 
@@ -64,6 +65,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         @Override
         public void onClick(View view) {
             Log.d("HOLDER", "CLICK LISTENER HAS BEEN PRESSED");
+            Log.d("RECIPE IS", recipe.getName());
             recipeClickListener.onRecipeClicked(recipeList.get(getAdapterPosition()));
         }
     }
