@@ -1,9 +1,11 @@
 package com.amirely.elite.bakit.homepage;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,12 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.amirely.elite.bakit.R;
+import com.amirely.elite.bakit.RecipeStepsFragment;
 import com.amirely.elite.bakit.models.Recipe;
-import com.amirely.elite.bakit.models.RecipeIngredient;
-import com.amirely.elite.bakit.models.RecipeResults;
-import com.amirely.elite.bakit.models.RecipeStep;
 import com.amirely.elite.bakit.network.NetworkService;
 import com.amirely.elite.bakit.network.RecipeApi;
+import com.amirely.elite.bakit.utils.Navigator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,40 +40,23 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
 
     RecipeApi recipeApi;
 
+    Navigator navigator;
+
+    FragmentManager manager;
+
 
     public RecipesFragment() {
         // Required empty public constructor
         recipeApi = NetworkService.create(RecipeApi.class);
-
     }
 
     public static RecipesFragment newInstance() {
         return new RecipesFragment();
     }
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-    }
-
-    private void pupulateRecipeList() {
-
-        for (int i = 0; i < 10; i++) {
-
-            RecipeIngredient ingredient = new RecipeIngredient(1.5, "measure", "INGREDIENT"+i);
-            ArrayList<RecipeIngredient> recipeIngredients = new ArrayList<>();
-            recipeIngredients.add(ingredient);
-
-            RecipeStep recipeStep = new RecipeStep("step1"+i, "this is a short description", "another description", "http//videourl", "http//thumbnail");
-            ArrayList<RecipeStep> steps = new ArrayList<>();
-            steps.add(recipeStep);
-
-            Recipe recipe = new Recipe("1", "RecipeName"+i, recipeIngredients, steps, 1, "http//imageForRecipe");
-            recipeList.add(recipe);
-        }
 
     }
 
@@ -88,7 +72,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
 
         Log.d("LIST OF RECIPES", String.valueOf(recipeList.size()));
 
-        pupulateRecipeList();
+//        populateRecipeList();
 
         fetchRecipeList();
 
@@ -131,8 +115,8 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
         });
     }
 
-    private void updateAdapter(List<Recipe> recivedRecipeList) {
-        RecipeAdapter adapter = new RecipeAdapter(recivedRecipeList, this);
+    private void updateAdapter(List<Recipe> receivedRecipeList) {
+        RecipeAdapter adapter = new RecipeAdapter(receivedRecipeList, this);
 
         recipeRecyclerView.swapAdapter(adapter, true);
 
@@ -141,6 +125,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
     }
 
     @Override
@@ -151,5 +136,28 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
     @Override
     public void onRecipeClicked(Recipe recipe) {
         Log.d("ON RECIPE", recipe.getName() + " has been clicked");
+
+        Log.d("ON RECIPE", String.valueOf(recipe.getSteps().size()) + " RECIPE STEPS");
+
+        manager = getFragmentManager();
+
+        navigator = new Navigator(manager);
+
+
+
+
+
+        navigator.navigateTo(RecipeStepsFragment.newInstance(recipe.getSteps()));
+
     }
+
+    public FragmentManager getCustomFragmentManager() {
+        return getFragmentManager();
+    }
+
+
+    public void goBack() {
+        Objects.requireNonNull(getFragmentManager()).popBackStack();
+    }
+
 }

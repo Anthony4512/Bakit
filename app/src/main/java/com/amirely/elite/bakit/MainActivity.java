@@ -17,15 +17,20 @@ public class MainActivity extends AppCompatActivity {
 
         FragmentManager manager = getSupportFragmentManager();
         Fragment recipesFragment = RecipesFragment.newInstance();
-        Fragment stepsFragment = RecipeStepsFragment.newInstance();
+//        Fragment stepsFragment = RecipeStepsFragment.newInstance();
         Fragment recipeStepDetailsFragment = RecipeStepDetailsFragment.newInstance();
 
 
 //        manager.beginTransaction().replace(R.id.main_fragment_container, stepsFragment).addToBackStack(null).commit();
 
-        manager.beginTransaction().replace(R.id.main_fragment_container, recipesFragment).addToBackStack(null).commit();
+//        manager.beginTransaction().replace(R.id.main_fragment_container, recipesFragment).addToBackStack(null).commit();
 
 //        manager.beginTransaction().replace(R.id.main_fragment_container, recipeStepDetailsFragment).addToBackStack(null).commit();
+
+
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.main_fragment_container, RecipesFragment.newInstance())
+                .commit();
 
     }
 

@@ -30,16 +30,16 @@ public class RecipeStepsFragment extends Fragment {
 
     RecyclerView recipeRecyclerView;
 
-
     public RecipeStepsFragment() {
         // Required empty public constructor
     }
 
-    public static RecipeStepsFragment newInstance() {
-        return new RecipeStepsFragment();
+    public static RecipeStepsFragment newInstance(List<RecipeStep> recipeSteps) {
+
+        RecipeStepsFragment fragment = new RecipeStepsFragment();
+        fragment.stepList = recipeSteps;
+        return fragment;
     }
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,34 +47,9 @@ public class RecipeStepsFragment extends Fragment {
 
     }
 
-    private void pupulateRecipeList() {
-
-        for (int i = 0; i < 10; i++) {
-
-            RecipeIngredient ingredient = new RecipeIngredient(1.5, "measure", "INGREDIENT"+i);
-            ArrayList<RecipeIngredient> recipeIngredients = new ArrayList<>();
-            recipeIngredients.add(ingredient);
-
-            RecipeStep recipeStep = new RecipeStep("step1"+i, "this is a short description", "another description", "http//videourl", "http//thumbnail");
-            ArrayList<RecipeStep> steps = new ArrayList<>();
-            steps.add(recipeStep);
-
-            Recipe recipe = new Recipe("1", "RecipeName"+i, recipeIngredients, steps, 1, "http//imageForRecipe");
-
-
-            stepList.add(recipe.getSteps().get(0));
-        }
-
-    }
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
-        stepList = new ArrayList<>();
-
-        pupulateRecipeList();
 
         View view = inflater.inflate(R.layout.fragment_recipe_steps, container, false);
 
@@ -99,8 +74,4 @@ public class RecipeStepsFragment extends Fragment {
         super.onDetach();
     }
 
-//    @Override
-//    public void onStepClicked(RecipeStep step) {
-//        Log.d("ON STEP CLICKED", step.getShortDescription() + " has been clicked");
-//    }
 }
