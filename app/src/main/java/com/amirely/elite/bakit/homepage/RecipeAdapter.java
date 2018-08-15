@@ -20,10 +20,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     private OnRecipeClickListener recipeClickListener;
 
-    interface OnRecipeClickListener {
-        void onRecipeClicked(Recipe recipe);
-    }
-
     RecipeAdapter(List<Recipe> recipeList, OnRecipeClickListener clickListener) {
         this.recipeList = recipeList;
         this.recipeClickListener = clickListener;
@@ -44,13 +40,17 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         holder.recipe = recipe;
     }
 
-
     @Override
     public int getItemCount() {
         return recipeList == null ? 0 : recipeList.size();
     }
 
-    class RecipeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+
+    interface OnRecipeClickListener {
+        void onRecipeClicked(Recipe recipe);
+    }
+
+    class RecipeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView currentRecipe;
         ConstraintLayout itemLayout;
         Recipe recipe;
@@ -69,7 +69,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             recipeClickListener.onRecipeClicked(recipeList.get(getAdapterPosition()));
         }
     }
-
 
 
 }

@@ -1,6 +1,5 @@
 package com.amirely.elite.bakit.homepage;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -30,7 +29,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeClickListener{
+public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeClickListener {
 
     List<Recipe> recipeList;
 
@@ -97,6 +96,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
 
                 Log.d("RESPONSE", String.valueOf(receivedRecipeList.size()));
             }
+
             @Override
             public void onFailure(@NonNull Call<Recipe[]> call, Throwable t) {
                 Log.d("RECIPES FRAGMENT 2", t.getMessage());
@@ -131,7 +131,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
 
         navigator = new Navigator(manager);
 
-        navigator.navigateTo(RecipeStepsFragment.newInstance(recipe.getSteps()));
+        navigator.navigateTo(RecipeStepsFragment.newInstance(recipe));
 
     }
 

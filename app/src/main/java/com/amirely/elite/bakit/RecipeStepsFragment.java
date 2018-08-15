@@ -1,34 +1,31 @@
 package com.amirely.elite.bakit;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
-import com.amirely.elite.bakit.homepage.RecipeAdapter;
-import com.amirely.elite.bakit.homepage.RecipesFragment;
 import com.amirely.elite.bakit.models.Recipe;
 import com.amirely.elite.bakit.models.RecipeIngredient;
 import com.amirely.elite.bakit.models.RecipeStep;
 import com.amirely.elite.bakit.utils.Navigator;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
-
-public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStepClickListener{
+public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStepClickListener {
     //    private OnFragmentInteractionListener mListener;
 
     List<RecipeStep> stepList;
+    List<RecipeIngredient> ingredients;
+    Recipe currentRecipe;
 
     RecyclerView recipeRecyclerView;
 
@@ -40,10 +37,12 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
         // Required empty public constructor
     }
 
-    public static RecipeStepsFragment newInstance(List<RecipeStep> recipeSteps) {
+    public static RecipeStepsFragment newInstance(Recipe recipe) {
 
         RecipeStepsFragment fragment = new RecipeStepsFragment();
-        fragment.stepList = recipeSteps;
+        fragment.stepList = recipe.getSteps();
+        fragment.ingredients = recipe.getIngredients();
+        fragment.currentRecipe = recipe;
         return fragment;
     }
 
@@ -62,10 +61,18 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
         recipeRecyclerView = view.findViewById(R.id.recipe_steps_rv);
         LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext(), LinearLayoutManager.VERTICAL, false);
 
-        StepsAdapter stepsAdapter = new StepsAdapter(stepList, this);
+        StepsAdapter stepsAdapter = new StepsAdapter(currentRecipe, this);
 
         recipeRecyclerView.setLayoutManager(layoutManager);
         recipeRecyclerView.setAdapter(stepsAdapter);
+
+
+        TextView ingredientsTv = view.findViewById(R.id.step_ingredients_tv);
+
+
+
+
+
 
         return view;
     }
