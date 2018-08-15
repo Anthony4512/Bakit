@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="80dp">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -29,7 +28,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:text="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large.Inverse"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -40,10 +39,20 @@
                 android:layout_height="32dp"
                 android:layout_marginStart="8dp"
                 android:text="RECIPE STEP NAME"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large.Inverse"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 app:layout_constraintBottom_toBottomOf="@+id/step_number_tv"
                 app:layout_constraintStart_toEndOf="@+id/step_number_tv"
                 app:layout_constraintTop_toTopOf="@+id/step_number_tv" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/forward_48" />
 
         </android.support.constraint.ConstraintLayout>
 

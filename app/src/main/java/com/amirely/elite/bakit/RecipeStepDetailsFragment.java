@@ -5,18 +5,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.amirely.elite.bakit.models.Recipe;
-import com.amirely.elite.bakit.models.RecipeIngredient;
 import com.amirely.elite.bakit.models.RecipeStep;
-import com.amirely.elite.bakit.network.NetworkService;
-import com.amirely.elite.bakit.network.RecipeApi;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -30,8 +25,6 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 
@@ -68,8 +61,17 @@ public class RecipeStepDetailsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_recipe_step_details, container, false);
 
         simpleExoPlayerView = view.findViewById(R.id.details_exoplayer);
+        ImageView noVideoImageView = view.findViewById(R.id.no_video_image);
 
-        initializeExoplayer(Uri.parse(recipeStep.getVideoURL()));
+        if (recipeStep.getVideoURL() == null || recipeStep.getVideoURL().isEmpty()) {
+            simpleExoPlayerView.setVisibility(View.GONE);
+            noVideoImageView.setVisibility(View.VISIBLE);
+
+        } else {
+            Uri videoUri = Uri.parse(recipeStep.getVideoURL());
+            initializeExoplayer(videoUri);
+        }
+
 
         TextView stepTitle = view.findViewById(R.id.step_details_title);
         TextView stepDetails = view.findViewById(R.id.step_details_description);
@@ -82,7 +84,7 @@ public class RecipeStepDetailsFragment extends Fragment {
     }
 
     private void initializeExoplayer(Uri videoUri) {
-        if(exoPlayer == null) {
+        if (exoPlayer == null) {
 
             TrackSelector trackSelector = new DefaultTrackSelector();
             LoadControl loadControl = new DefaultLoadControl();
@@ -115,7 +117,9 @@ public class RecipeStepDetailsFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        releasePlayer();
+        if (exoPlayer != null) {
+            releasePlayer();
+        }
     }
 
 }

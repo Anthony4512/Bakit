@@ -1,16 +1,11 @@
 package com.amirely.elite.bakit.network;
 
 
-
 import com.amirely.elite.bakit.models.Recipe;
 import com.amirely.elite.bakit.models.RecipeResults;
 
-import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.http.GET;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
 
 public interface RecipeApi {
 
@@ -19,8 +14,6 @@ public interface RecipeApi {
 
     @GET("topher/2017/May/59121517_baking/baking.json")
     Call<Recipe[]> getListRecipes();
-
-
 
 
 //    @GET("movie/top_rated")
