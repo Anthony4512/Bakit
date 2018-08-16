@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.amirely.elite.bakit.models.Recipe;
+import com.amirely.elite.bakit.models.RecipeStep;
 import com.amirely.elite.bakit.network.NetworkService;
 import com.amirely.elite.bakit.network.RecipeApi;
 
@@ -36,6 +37,13 @@ public class MainActivityViewModel extends ViewModel{
         return recipeList;
     }
 
+//    public LiveData<List<RecipeStep>> getStepsFromRecipe(Recipe recipe) {
+//        if()
+//    }
+
+
+
+
     private void fetchRecipeList() {
 
         Log.d("FETCH MOVIES", "Fetch movies has been called");
@@ -60,4 +68,10 @@ public class MainActivityViewModel extends ViewModel{
             }
         });
     }
+
+
+
+
+
+
 }

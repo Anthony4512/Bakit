@@ -54,9 +54,8 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
         recipeApi = NetworkService.create(RecipeApi.class);
     }
 
-    public static RecipesFragment newInstance(List<Recipe> recipeList) {
+    public static RecipesFragment newInstance() {
         RecipesFragment fragment = new RecipesFragment();
-        fragment.recipeList = recipeList;
         return fragment;
     }
 
