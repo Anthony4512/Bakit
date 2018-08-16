@@ -17,7 +17,7 @@ public class NetworkService {
 //    private static String API_KEY = "71ab1b19293efe581c569c1c79d0f004";
 
     private static String BASE_URL = "https://d17h27t6h515a5.cloudfront.net/";
-    private static HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY);
+//    private static HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY);
 
     private static OkHttpClient okHttpClient = new OkHttpClient.Builder().addInterceptor(chain -> {
         Request request = chain.request();
@@ -29,7 +29,8 @@ public class NetworkService {
 
         return chain.proceed(request);
     })
-            .addInterceptor(httpLoggingInterceptor).build();
+            .build();
+//            .addInterceptor(httpLoggingInterceptor).build();
 
     private static Gson gsonBuilder = new GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
