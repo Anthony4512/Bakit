@@ -2,10 +2,10 @@ package com.amirely.elite.bakit.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Recipe implements Parcelable {
@@ -18,10 +18,10 @@ public class Recipe implements Parcelable {
     private String name;
     @SerializedName("ingredients")
     @Expose
-    private List<RecipeIngredient> ingredients = null;
+    private List<RecipeIngredient> ingredients;
     @SerializedName("steps")
     @Expose
-    private List<RecipeStep> steps = null;
+    private ArrayList<RecipeStep> steps;
     @SerializedName("servings")
     @Expose
     private String servings;
@@ -74,11 +74,11 @@ public class Recipe implements Parcelable {
         this.ingredients = ingredients;
     }
 
-    public List<RecipeStep> getSteps() {
+    public ArrayList<RecipeStep> getSteps() {
         return steps;
     }
 
-    public void setSteps(List<RecipeStep> steps) {
+    public void setSteps(ArrayList<RecipeStep> steps) {
         this.steps = steps;
     }
 

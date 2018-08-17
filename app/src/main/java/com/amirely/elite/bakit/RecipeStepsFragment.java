@@ -25,7 +25,7 @@ import java.util.List;
 public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStepClickListener {
     //    private OnFragmentInteractionListener mListener;
 
-    List<RecipeStep> stepList;
+    ArrayList<RecipeStep> stepList;
     List<RecipeIngredient> ingredients;
     Recipe currentRecipe;
 
@@ -52,6 +52,11 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if(savedInstanceState != null) {
+            stepList = savedInstanceState.getParcelableArrayList("stepList");
+            currentRecipe = savedInstanceState.getParcelable("recipe");
+        }
+
     }
 
     @Override
@@ -59,9 +64,7 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
                              Bundle savedInstanceState) {
 
 
-        if(savedInstanceState != null) {
-            stepList = savedInstanceState.getParcelableArrayList("stepList");
-        }
+
 
         View view = inflater.inflate(R.layout.fragment_recipe_steps, container, false);
 
@@ -100,6 +103,7 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList("stepsList", (ArrayList<? extends Parcelable>) stepList);
+        outState.putParcelableArrayList("stepsList", stepList);
+        outState.putParcelable("recipe", currentRecipe);
     }
 }

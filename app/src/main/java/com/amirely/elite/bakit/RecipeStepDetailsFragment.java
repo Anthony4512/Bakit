@@ -42,15 +42,16 @@ public class RecipeStepDetailsFragment extends Fragment {
 
     public static RecipeStepDetailsFragment newInstance(RecipeStep step) {
         RecipeStepDetailsFragment fragment = new RecipeStepDetailsFragment();
-
         fragment.recipeStep = step;
-
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(savedInstanceState != null) {
+            recipeStep = savedInstanceState.getParcelable("recipeStep");
+        }
 
     }
 
@@ -122,4 +123,9 @@ public class RecipeStepDetailsFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("recipeStep", recipeStep);
+    }
 }
