@@ -1,8 +1,11 @@
 package com.amirely.elite.bakit.homepage;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.amirely.elite.bakit.MainActivityViewModel;
 import com.amirely.elite.bakit.R;
 import com.amirely.elite.bakit.RecipeStepsFragment;
 import com.amirely.elite.bakit.models.Recipe;
@@ -41,6 +45,9 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
 
     FragmentManager manager;
 
+    MainActivityViewModel model;
+
+
 
     public RecipesFragment() {
         // Required empty public constructor
@@ -48,12 +55,15 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
     }
 
     public static RecipesFragment newInstance() {
-        return new RecipesFragment();
+        RecipesFragment fragment = new RecipesFragment();
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        model = ViewModelProviders.of(this).get(MainActivityViewModel.class);
 
     }
 
@@ -61,21 +71,26 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        recipeList = new ArrayList<>();
+//        recipeList = new ArrayList<>();
 
-        Log.d("LIST OF RECIPES", String.valueOf(recipeList.size()));
+//        Log.d("LIST OF RECIPES", String.valueOf(recipeList.size()));
 
-        fetchRecipeList();
+//        fetchRecipeList();
 
         View view = inflater.inflate(R.layout.fragment_recipes, container, false);
 
         recipeRecyclerView = view.findViewById(R.id.recipes_rv);
         LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext(), LinearLayoutManager.VERTICAL, false);
 
-        RecipeAdapter recipeAdapter = new RecipeAdapter(recipeList, this);
 
         recipeRecyclerView.setLayoutManager(layoutManager);
-        recipeRecyclerView.setAdapter(recipeAdapter);
+
+
+        model.getRecipeList().observe(this, recipes -> {
+            recipeList = recipes;
+            RecipeAdapter recipeAdapter = new RecipeAdapter(recipeList, RecipesFragment.this);
+            recipeRecyclerView.setAdapter(recipeAdapter);
+        });
 
         return view;
     }

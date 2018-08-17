@@ -2,6 +2,7 @@ package com.amirely.elite.bakit;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,6 +18,7 @@ import com.amirely.elite.bakit.models.RecipeIngredient;
 import com.amirely.elite.bakit.models.RecipeStep;
 import com.amirely.elite.bakit.utils.Navigator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -56,6 +58,11 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+
+        if(savedInstanceState != null) {
+            stepList = savedInstanceState.getParcelableArrayList("stepList");
+        }
+
         View view = inflater.inflate(R.layout.fragment_recipe_steps, container, false);
 
         recipeRecyclerView = view.findViewById(R.id.recipe_steps_rv);
@@ -65,13 +72,6 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
 
         recipeRecyclerView.setLayoutManager(layoutManager);
         recipeRecyclerView.setAdapter(stepsAdapter);
-
-
-        TextView ingredientsTv = view.findViewById(R.id.step_ingredients_tv);
-
-
-
-
 
 
         return view;
@@ -95,5 +95,11 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
         navigator = new Navigator(manager);
 
         navigator.navigateTo(RecipeStepDetailsFragment.newInstance(recipeStep));
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("stepsList", (ArrayList<? extends Parcelable>) stepList);
     }
 }
