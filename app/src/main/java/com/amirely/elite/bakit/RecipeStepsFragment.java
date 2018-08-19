@@ -1,11 +1,13 @@
 package com.amirely.elite.bakit;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,6 +22,7 @@ import com.amirely.elite.bakit.utils.Navigator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStepClickListener {
@@ -32,6 +35,8 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
     RecyclerView recipeRecyclerView;
 
     Navigator navigator;
+
+    int stepPosition;
 
     FragmentManager manager;
 
@@ -51,12 +56,16 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        stepPosition = 1;
+
+        manager = getFragmentManager();
+
+        navigator = new Navigator(manager);
 
         if(savedInstanceState != null) {
             stepList = savedInstanceState.getParcelableArrayList("stepList");
             currentRecipe = savedInstanceState.getParcelable("recipe");
         }
-
     }
 
     @Override
@@ -64,6 +73,14 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
                              Bundle savedInstanceState) {
 
 
+        if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
+                Configuration.ORIENTATION_LANDSCAPE) {
+            navigator.makeStepsFullScreen(this, RecipeStepDetailsFragment.newInstance(currentRecipe.getSteps(), stepPosition));
+        }
+//        else {
+//            LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext(), LinearLayoutManager.VERTICAL, false);
+//            recipeRecyclerView.setLayoutManager(layoutManager);
+//        }
 
 
         View view = inflater.inflate(R.layout.fragment_recipe_steps, container, false);
@@ -91,13 +108,11 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
     }
 
     @Override
-    public void onStepClicked(RecipeStep recipeStep) {
+    public void onStepClicked(int position) {
 
-        manager = getFragmentManager();
+        this.stepPosition = position;
 
-        navigator = new Navigator(manager);
-
-        navigator.navigateTo(RecipeStepDetailsFragment.newInstance(recipeStep));
+        navigator.navigateTo(RecipeStepDetailsFragment.newInstance(stepList, position));
     }
 
     @Override
@@ -105,5 +120,13 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList("stepsList", stepList);
         outState.putParcelable("recipe", currentRecipe);
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Objects.requireNonNull(getActivity()).setTitle(currentRecipe.getName());
+
     }
 }

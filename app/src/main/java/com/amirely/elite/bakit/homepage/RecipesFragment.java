@@ -3,17 +3,21 @@ package com.amirely.elite.bakit.homepage;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.amirely.elite.bakit.MainActivityViewModel;
 import com.amirely.elite.bakit.R;
@@ -31,6 +35,8 @@ import java.util.Objects;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 
 public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeClickListener {
@@ -55,8 +61,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
     }
 
     public static RecipesFragment newInstance() {
-        RecipesFragment fragment = new RecipesFragment();
-        return fragment;
+        return new RecipesFragment();
     }
 
     @Override
@@ -70,20 +75,22 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-//        recipeList = new ArrayList<>();
-
-//        Log.d("LIST OF RECIPES", String.valueOf(recipeList.size()));
-
-//        fetchRecipeList();
-
         View view = inflater.inflate(R.layout.fragment_recipes, container, false);
 
         recipeRecyclerView = view.findViewById(R.id.recipes_rv);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext(), LinearLayoutManager.VERTICAL, false);
 
 
-        recipeRecyclerView.setLayoutManager(layoutManager);
+        if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
+                Configuration.ORIENTATION_LANDSCAPE) {
+            GridLayoutManager layoutManager = new GridLayoutManager(container.getContext(), 3, LinearLayoutManager.VERTICAL, false);
+            recipeRecyclerView.setLayoutManager(layoutManager);
+
+        }
+        else {
+            LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext(), LinearLayoutManager.VERTICAL, false);
+            recipeRecyclerView.setLayoutManager(layoutManager);
+        }
+
 
 
         model.getRecipeList().observe(this, recipes -> {
@@ -93,36 +100,6 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
         });
 
         return view;
-    }
-
-    public void fetchRecipeList() {
-        Call<Recipe[]> searchMoviesByQueryCall;
-
-        searchMoviesByQueryCall = recipeApi.getListRecipes();
-
-
-        searchMoviesByQueryCall.enqueue(new Callback<Recipe[]>() {
-            @Override
-            public void onResponse(@NonNull Call<Recipe[]> call, @NonNull Response<Recipe[]> response) {
-                Recipe[] recipeResults = response.body();
-                List<Recipe> receivedRecipeList = new ArrayList<>(Arrays.asList(Objects.requireNonNull(recipeResults)));
-
-                updateAdapter(receivedRecipeList);
-
-                Log.d("RESPONSE", String.valueOf(receivedRecipeList.size()));
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<Recipe[]> call, Throwable t) {
-                Log.d("RECIPES FRAGMENT 2", t.getMessage());
-            }
-        });
-    }
-
-    private void updateAdapter(List<Recipe> receivedRecipeList) {
-        RecipeAdapter adapter = new RecipeAdapter(receivedRecipeList, this);
-
-        recipeRecyclerView.swapAdapter(adapter, true);
     }
 
     @Override
@@ -138,20 +115,15 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
 
     @Override
     public void onRecipeClicked(Recipe recipe) {
-        Log.d("ON RECIPE", recipe.getName() + " has been clicked");
-
-        Log.d("ON RECIPE", String.valueOf(recipe.getSteps().size()) + " RECIPE STEPS");
-
         manager = getFragmentManager();
-
         navigator = new Navigator(manager);
-
         navigator.navigateTo(RecipeStepsFragment.newInstance(recipe));
-
     }
 
-    public void goBack() {
-        Objects.requireNonNull(getFragmentManager()).popBackStack();
-    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        Objects.requireNonNull(getActivity()).setTitle("Bakit");
 
+    }
 }

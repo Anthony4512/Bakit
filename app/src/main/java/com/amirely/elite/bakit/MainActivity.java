@@ -1,7 +1,10 @@
 package com.amirely.elite.bakit;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+
 import com.amirely.elite.bakit.homepage.RecipesFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -16,9 +19,9 @@ public class MainActivity extends AppCompatActivity {
 
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.main_fragment_container, RecipesFragment.newInstance())
+                    .addToBackStack(null)
                     .commit();
-
         }
-
     }
+
 }

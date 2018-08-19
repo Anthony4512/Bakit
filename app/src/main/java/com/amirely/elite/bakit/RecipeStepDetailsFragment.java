@@ -1,17 +1,24 @@
 package com.amirely.elite.bakit;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-
+import android.widget.Toast;
 import com.amirely.elite.bakit.models.RecipeStep;
+import com.amirely.elite.bakit.utils.Navigator;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -24,9 +31,10 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
-
+import java.util.ArrayList;
 import java.util.Objects;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 public class RecipeStepDetailsFragment extends Fragment {
 
@@ -36,13 +44,43 @@ public class RecipeStepDetailsFragment extends Fragment {
 
     RecipeStep recipeStep;
 
+    ArrayList<RecipeStep> stepList;
+
+    int position;
+
     public RecipeStepDetailsFragment() {
 
     }
 
-    public static RecipeStepDetailsFragment newInstance(RecipeStep step) {
+
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig) {
+//        super.onConfigurationChanged(newConfig);
+//        Log.d("CONFIGURATION CHANGE", "CONFIGURATION HAS CHANGED")
+//
+//        // Checking the orientation of the screen
+//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//            //First Hide other objects (listview or recyclerview), better hide them using Gone.
+//            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) simpleExoPlayerView.getLayoutParams();
+//            params.width= MATCH_PARENT;
+//            params.height= MATCH_PARENT;
+//            simpleExoPlayerView.setLayoutParams(params);
+//        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+//            //unhide your objects here.
+//            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) simpleExoPlayerView.getLayoutParams();
+//            params.width= MATCH_PARENT;
+//            params.height=600;
+//            simpleExoPlayerView.setLayoutParams(params);
+//        }
+//    }
+
+
+    public static RecipeStepDetailsFragment newInstance(ArrayList<RecipeStep> steps, int position) {
         RecipeStepDetailsFragment fragment = new RecipeStepDetailsFragment();
-        fragment.recipeStep = step;
+        fragment.recipeStep = steps.get(position);
+        fragment.stepList = steps;
+        fragment.position = position;
+
         return fragment;
     }
 
@@ -51,8 +89,8 @@ public class RecipeStepDetailsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
             recipeStep = savedInstanceState.getParcelable("recipeStep");
+            stepList = savedInstanceState.getParcelableArrayList("stepList");
         }
-
     }
 
     @Override
@@ -63,6 +101,17 @@ public class RecipeStepDetailsFragment extends Fragment {
 
         simpleExoPlayerView = view.findViewById(R.id.details_exoplayer);
         ImageView noVideoImageView = view.findViewById(R.id.no_video_image);
+
+
+        if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
+                Configuration.ORIENTATION_LANDSCAPE) {
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) simpleExoPlayerView.getLayoutParams();
+            params.width = MATCH_PARENT;
+            params.height = MATCH_PARENT;
+            simpleExoPlayerView.setLayoutParams(params);
+
+            Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).hide();
+        }
 
         if (recipeStep.getVideoURL() == null || recipeStep.getVideoURL().isEmpty()) {
             simpleExoPlayerView.setVisibility(View.GONE);
@@ -76,12 +125,27 @@ public class RecipeStepDetailsFragment extends Fragment {
 
         TextView stepTitle = view.findViewById(R.id.step_details_title);
         TextView stepDetails = view.findViewById(R.id.step_details_description);
-
-
         stepTitle.setText(recipeStep.getShortDescription());
         stepDetails.setText(recipeStep.getDescription());
 
+
+        ImageButton backImgButton = view.findViewById(R.id.back_button_details);
+        backImgButton.setOnClickListener(view1 -> goStepBack());
+
+        ImageButton forwardImgButton = view.findViewById(R.id.forward_button_details);
+        forwardImgButton.setOnClickListener(view1 -> getNextStep());
+
         return view;
+    }
+
+    private void getNextStep() {
+        if(position < stepList.size()-1) {
+            Navigator navigator = new Navigator(this.getFragmentManager());
+            navigator.navigateTo(RecipeStepDetailsFragment.newInstance(stepList, position + 1));
+        }
+        else {
+            Toast.makeText(getActivity(), "No more steps available", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void initializeExoplayer(Uri videoUri) {
@@ -91,11 +155,8 @@ public class RecipeStepDetailsFragment extends Fragment {
             LoadControl loadControl = new DefaultLoadControl();
 
             exoPlayer = ExoPlayerFactory.newSimpleInstance(this.getContext(), trackSelector, loadControl);
-
             simpleExoPlayerView.setPlayer(exoPlayer);
-
             String userAgent = Util.getUserAgent(getActivity(), "Bakit");
-
             MediaSource mediaSource = new ExtractorMediaSource(videoUri, new DefaultDataSourceFactory(Objects.requireNonNull(getActivity()), userAgent), new DefaultExtractorsFactory(), null, null);
 
             exoPlayer.prepare(mediaSource);
@@ -127,5 +188,31 @@ public class RecipeStepDetailsFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable("recipeStep", recipeStep);
+        outState.putParcelableArrayList("stepList", stepList);
     }
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Objects.requireNonNull(getActivity()).setTitle("Step " + recipeStep.getId());
+    }
+
+    public void goStepBack() {
+        if(position > 1) {
+            Navigator navigator = new Navigator(this.getFragmentManager());
+            navigator.navigateTo(RecipeStepDetailsFragment.newInstance(stepList, position - 1));
+        }
+        else {
+            Toast.makeText(getActivity(), "No more steps available", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+
 }

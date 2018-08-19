@@ -20,4 +20,17 @@ public class Navigator {
                 .addToBackStack(null)
                 .commit();
     }
+
+
+    public void makeStepsFullScreen(Fragment fragment1, Fragment fragment2) {
+        fragmentManager.beginTransaction()
+                .replace(R.id.main_fragment_container, fragment1)
+                .addToBackStack(null)
+                .commit();
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.secondary_fragment_container, fragment2)
+                .addToBackStack(null)
+                .commit();
+    }
 }
