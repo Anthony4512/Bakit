@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.amirely.elite.bakit.MainActivityViewModel;
 import com.amirely.elite.bakit.R;
@@ -53,6 +54,8 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
 
     MainActivityViewModel model;
 
+    private boolean isTablet;
+
 
 
     public RecipesFragment() {
@@ -62,6 +65,13 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
 
     public static RecipesFragment newInstance() {
         return new RecipesFragment();
+    }
+
+    public static RecipesFragment newInstance(boolean isTablet) {
+
+        RecipesFragment fragment = new RecipesFragment();
+        fragment.isTablet = isTablet;
+        return fragment;
     }
 
     @Override
@@ -75,13 +85,31 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+//        boolean isTablet = container.findViewById(R.id.tablet_main_layout) != null;
+
+
+//        if(isTablet) {
+//            LinearLayout parent = (LinearLayout) container;
+//
+//            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+//                    MATCH_PARENT,
+//                    MATCH_PARENT);
+//
+//            parent.setLayoutParams(params);
+//        }
+
+
         View view = inflater.inflate(R.layout.fragment_recipes, container, false);
 
         recipeRecyclerView = view.findViewById(R.id.recipes_rv);
 
 
+
         if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
-                Configuration.ORIENTATION_LANDSCAPE) {
+                Configuration.ORIENTATION_LANDSCAPE || isTablet) {
+
+
             GridLayoutManager layoutManager = new GridLayoutManager(container.getContext(), 3, LinearLayoutManager.VERTICAL, false);
             recipeRecyclerView.setLayoutManager(layoutManager);
 
@@ -117,7 +145,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
     public void onRecipeClicked(Recipe recipe) {
         manager = getFragmentManager();
         navigator = new Navigator(manager);
-        navigator.navigateTo(RecipeStepsFragment.newInstance(recipe));
+        navigator.navigateTo(RecipeStepsFragment.newInstance(recipe, isTablet));
     }
 
     @Override

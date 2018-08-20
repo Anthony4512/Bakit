@@ -2,6 +2,7 @@ package com.amirely.elite.bakit.utils;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.widget.FrameLayout;
 
 import com.amirely.elite.bakit.R;
 
@@ -32,5 +33,14 @@ public class Navigator {
                 .replace(R.id.secondary_fragment_container, fragment2)
                 .addToBackStack(null)
                 .commit();
+    }
+
+
+    public void addSecondFragment(Fragment fragment) {
+        fragmentManager.beginTransaction()
+                .replace(R.id.secondary_fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+
     }
 }

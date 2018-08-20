@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amirely.elite.bakit.models.Recipe;
@@ -23,6 +24,8 @@ import com.amirely.elite.bakit.utils.Navigator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 
 public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStepClickListener {
@@ -40,16 +43,19 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
 
     FragmentManager manager;
 
+    boolean isTablet;
+
     public RecipeStepsFragment() {
         // Required empty public constructor
     }
 
-    public static RecipeStepsFragment newInstance(Recipe recipe) {
+    public static RecipeStepsFragment newInstance(Recipe recipe, boolean isTablet) {
 
         RecipeStepsFragment fragment = new RecipeStepsFragment();
         fragment.stepList = recipe.getSteps();
         fragment.ingredients = recipe.getIngredients();
         fragment.currentRecipe = recipe;
+        fragment.isTablet = isTablet;
         return fragment;
     }
 
@@ -73,17 +79,33 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
                              Bundle savedInstanceState) {
 
 
-        if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
+
+        if(isTablet && Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
                 Configuration.ORIENTATION_LANDSCAPE) {
-            navigator.makeStepsFullScreen(this, RecipeStepDetailsFragment.newInstance(currentRecipe.getSteps(), stepPosition));
+            LinearLayout parent = container.findViewById(R.id.main_fragment_container);
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    600,
+                    MATCH_PARENT);
+
+            parent.setLayoutParams(params);
+
+            navigator.addSecondFragment(RecipeStepDetailsFragment.newInstance(currentRecipe.getSteps(), stepPosition));
+
         }
+
+
+//        if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
+//                Configuration.ORIENTATION_LANDSCAPE) {
+//            navigator.makeStepsFullScreen(this, RecipeStepDetailsFragment.newInstance(currentRecipe.getSteps(), stepPosition));
+//        }
 //        else {
 //            LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext(), LinearLayoutManager.VERTICAL, false);
 //            recipeRecyclerView.setLayoutManager(layoutManager);
 //        }
 
-
         View view = inflater.inflate(R.layout.fragment_recipe_steps, container, false);
+
 
         recipeRecyclerView = view.findViewById(R.id.recipe_steps_rv);
         LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext(), LinearLayoutManager.VERTICAL, false);
@@ -111,8 +133,13 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
     public void onStepClicked(int position) {
 
         this.stepPosition = position;
-
-        navigator.navigateTo(RecipeStepDetailsFragment.newInstance(stepList, position));
+        if(isTablet && Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
+                Configuration.ORIENTATION_LANDSCAPE) {
+            navigator.addSecondFragment(RecipeStepDetailsFragment.newInstance(stepList, position));
+        }
+        else {
+            navigator.navigateTo(RecipeStepDetailsFragment.newInstance(stepList, position));
+        }
     }
 
     @Override

@@ -48,31 +48,11 @@ public class RecipeStepDetailsFragment extends Fragment {
 
     int position;
 
+    boolean isTablet;
+
     public RecipeStepDetailsFragment() {
 
     }
-
-
-//    @Override
-//    public void onConfigurationChanged(Configuration newConfig) {
-//        super.onConfigurationChanged(newConfig);
-//        Log.d("CONFIGURATION CHANGE", "CONFIGURATION HAS CHANGED")
-//
-//        // Checking the orientation of the screen
-//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            //First Hide other objects (listview or recyclerview), better hide them using Gone.
-//            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) simpleExoPlayerView.getLayoutParams();
-//            params.width= MATCH_PARENT;
-//            params.height= MATCH_PARENT;
-//            simpleExoPlayerView.setLayoutParams(params);
-//        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-//            //unhide your objects here.
-//            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) simpleExoPlayerView.getLayoutParams();
-//            params.width= MATCH_PARENT;
-//            params.height=600;
-//            simpleExoPlayerView.setLayoutParams(params);
-//        }
-//    }
 
 
     public static RecipeStepDetailsFragment newInstance(ArrayList<RecipeStep> steps, int position) {
@@ -80,6 +60,16 @@ public class RecipeStepDetailsFragment extends Fragment {
         fragment.recipeStep = steps.get(position);
         fragment.stepList = steps;
         fragment.position = position;
+
+        return fragment;
+    }
+
+    public static RecipeStepDetailsFragment newInstance(ArrayList<RecipeStep> steps, int position, boolean isTablet) {
+        RecipeStepDetailsFragment fragment = new RecipeStepDetailsFragment();
+        fragment.recipeStep = steps.get(position);
+        fragment.stepList = steps;
+        fragment.position = position;
+        fragment.isTablet = isTablet;
 
         return fragment;
     }
@@ -103,7 +93,27 @@ public class RecipeStepDetailsFragment extends Fragment {
         ImageView noVideoImageView = view.findViewById(R.id.no_video_image);
 
 
-        if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
+        ImageButton backImgButton = view.findViewById(R.id.back_button_details);
+        backImgButton.setOnClickListener(view1 -> goStepBack());
+
+        ImageButton forwardImgButton = view.findViewById(R.id.forward_button_details);
+        forwardImgButton.setOnClickListener(view1 -> getNextStep());
+
+
+
+        if(isTablet || Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
+                Configuration.ORIENTATION_LANDSCAPE) {
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) simpleExoPlayerView.getLayoutParams();
+            params.width = MATCH_PARENT;
+            params.height = 600;
+            simpleExoPlayerView.setLayoutParams(params);
+
+            backImgButton.setVisibility(View.GONE);
+            forwardImgButton.setVisibility(View.GONE);
+        }
+
+
+        if (!isTablet && Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
                 Configuration.ORIENTATION_LANDSCAPE) {
             FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) simpleExoPlayerView.getLayoutParams();
             params.width = MATCH_PARENT;
@@ -128,12 +138,6 @@ public class RecipeStepDetailsFragment extends Fragment {
         stepTitle.setText(recipeStep.getShortDescription());
         stepDetails.setText(recipeStep.getDescription());
 
-
-        ImageButton backImgButton = view.findViewById(R.id.back_button_details);
-        backImgButton.setOnClickListener(view1 -> goStepBack());
-
-        ImageButton forwardImgButton = view.findViewById(R.id.forward_button_details);
-        forwardImgButton.setOnClickListener(view1 -> getNextStep());
 
         return view;
     }
