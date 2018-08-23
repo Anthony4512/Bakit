@@ -80,19 +80,7 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
 
 
 
-        if(isTablet && Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
-                Configuration.ORIENTATION_LANDSCAPE) {
-            LinearLayout parent = container.findViewById(R.id.main_fragment_container);
 
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    600,
-                    MATCH_PARENT);
-
-            parent.setLayoutParams(params);
-
-            navigator.addSecondFragment(RecipeStepDetailsFragment.newInstance(currentRecipe.getSteps(), stepPosition));
-
-        }
 
 
 //        if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
@@ -114,6 +102,23 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
 
         recipeRecyclerView.setLayoutManager(layoutManager);
         recipeRecyclerView.setAdapter(stepsAdapter);
+
+
+        if(isTablet && Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
+                Configuration.ORIENTATION_LANDSCAPE) {
+            LinearLayout parent = getActivity().findViewById(R.id.main_fragment_container);
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    800,
+                    MATCH_PARENT);
+
+            parent.setLayoutParams(params);
+
+            if(currentRecipe != null) {
+                navigator.addSecondFragment(RecipeStepDetailsFragment.newInstance(currentRecipe.getSteps(), stepPosition));
+            }
+
+        }
 
 
         return view;

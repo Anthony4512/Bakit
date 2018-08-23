@@ -10,12 +10,16 @@ import android.widget.LinearLayout;
 import com.amirely.elite.bakit.homepage.RecipesFragment;
 import com.amirely.elite.bakit.utils.Navigator;
 
+import java.util.Objects;
+
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 public class MainActivity extends AppCompatActivity {
 
     Navigator navigator;
+    private boolean isTablet;
+
 
 
     @Override
@@ -24,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         navigator = new Navigator(getSupportFragmentManager());
 
-        boolean isTablet = findViewById(R.id.tablet_main_layout) != null;
+        isTablet = findViewById(R.id.tablet_main_layout) != null;
 
         if(savedInstanceState == null) {
 
@@ -33,10 +37,29 @@ public class MainActivity extends AppCompatActivity {
 //                    .addToBackStack(null)
 //                    .commit();
 
-            navigator.navigateTo(RecipesFragment.newInstance(isTablet));
+            navigator.createMainFragment(RecipesFragment.newInstance(isTablet));
 
 
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+//        if(isTablet && Objects.requireNonNull(getResources().getConfiguration().orientation ==
+//                Configuration.ORIENTATION_LANDSCAPE)) {
+//
+//            getSupportFragmentManager().popBackStack("main_fragment", 0);
+//
+//        }
+
+        if(getSupportFragmentManager().getBackStackEntryCount() <= 1) {
+            finish();
+        }
+        else {
+            getSupportFragmentManager().popBackStack("main_fragment", 0);
+
+        }
+    }
 }

@@ -57,16 +57,17 @@ public class RecipeStepDetailsFragment extends Fragment {
 
     public static RecipeStepDetailsFragment newInstance(ArrayList<RecipeStep> steps, int position) {
         RecipeStepDetailsFragment fragment = new RecipeStepDetailsFragment();
-        fragment.recipeStep = steps.get(position);
-        fragment.stepList = steps;
-        fragment.position = position;
-
+        if(steps != null) {
+            fragment.recipeStep = steps.get(position);
+            fragment.stepList = steps;
+            fragment.position = position;
+        }
         return fragment;
     }
 
     public static RecipeStepDetailsFragment newInstance(ArrayList<RecipeStep> steps, int position, boolean isTablet) {
         RecipeStepDetailsFragment fragment = new RecipeStepDetailsFragment();
-        fragment.recipeStep = steps.get(position);
+//        fragment.recipeStep = steps.get(position);
         fragment.stepList = steps;
         fragment.position = position;
         fragment.isTablet = isTablet;
@@ -103,7 +104,7 @@ public class RecipeStepDetailsFragment extends Fragment {
 
         if(isTablet || Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
                 Configuration.ORIENTATION_LANDSCAPE) {
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) simpleExoPlayerView.getLayoutParams();
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) simpleExoPlayerView.getLayoutParams();
             params.width = MATCH_PARENT;
             params.height = 600;
             simpleExoPlayerView.setLayoutParams(params);

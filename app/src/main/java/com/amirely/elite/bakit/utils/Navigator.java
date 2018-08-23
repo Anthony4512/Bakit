@@ -15,6 +15,14 @@ public class Navigator {
     }
 
 
+
+    public void createMainFragment(Fragment fragment) {
+        fragmentManager.beginTransaction()
+                .replace(R.id.main_fragment_container, fragment)
+                .addToBackStack("main_fragment")
+                .commit();
+    }
+
     public void navigateTo(Fragment fragment) {
         fragmentManager.beginTransaction()
                 .replace(R.id.main_fragment_container, fragment)

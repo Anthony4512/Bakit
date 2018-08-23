@@ -104,22 +104,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
 
         recipeRecyclerView = view.findViewById(R.id.recipes_rv);
 
-
-
-        if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
-                Configuration.ORIENTATION_LANDSCAPE || isTablet) {
-
-
-            GridLayoutManager layoutManager = new GridLayoutManager(container.getContext(), 3, LinearLayoutManager.VERTICAL, false);
-            recipeRecyclerView.setLayoutManager(layoutManager);
-
-        }
-        else {
-            LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext(), LinearLayoutManager.VERTICAL, false);
-            recipeRecyclerView.setLayoutManager(layoutManager);
-        }
-
-
+        initializeView();
 
         model.getRecipeList().observe(this, recipes -> {
             recipeList = recipes;
@@ -128,6 +113,34 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
         });
 
         return view;
+    }
+
+
+    public void initializeView() {
+        if(isTablet && Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
+                Configuration.ORIENTATION_LANDSCAPE) {
+
+            LinearLayout parent = getActivity().findViewById(R.id.main_fragment_container);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    MATCH_PARENT,
+                    MATCH_PARENT);
+
+            parent.setLayoutParams(params);
+        }
+
+
+        if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
+                Configuration.ORIENTATION_LANDSCAPE || isTablet) {
+
+
+            GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3, LinearLayoutManager.VERTICAL, false);
+            recipeRecyclerView.setLayoutManager(layoutManager);
+
+        }
+        else {
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+            recipeRecyclerView.setLayoutManager(layoutManager);
+        }
     }
 
     @Override
@@ -152,6 +165,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
     public void onResume() {
         super.onResume();
         Objects.requireNonNull(getActivity()).setTitle("Bakit");
+        initializeView();
 
     }
 }
