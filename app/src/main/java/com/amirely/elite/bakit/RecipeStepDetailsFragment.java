@@ -27,17 +27,13 @@ import com.google.android.exoplayer2.util.Util;
 
 import java.util.Objects;
 
-
 public class RecipeStepDetailsFragment extends Fragment {
 
-    SimpleExoPlayerView simpleExoPlayerView;
-
-    ExoPlayer exoPlayer;
-
-    RecipeStep recipeStep;
+    private SimpleExoPlayerView simpleExoPlayerView;
+    private ExoPlayer exoPlayer;
+    private RecipeStep recipeStep;
 
     public RecipeStepDetailsFragment() {
-
     }
 
     public static RecipeStepDetailsFragment newInstance(RecipeStep step) {
@@ -52,7 +48,6 @@ public class RecipeStepDetailsFragment extends Fragment {
         if(savedInstanceState != null) {
             recipeStep = savedInstanceState.getParcelable("recipeStep");
         }
-
     }
 
     @Override
@@ -77,31 +72,27 @@ public class RecipeStepDetailsFragment extends Fragment {
         TextView stepTitle = view.findViewById(R.id.step_details_title);
         TextView stepDetails = view.findViewById(R.id.step_details_description);
 
-
         stepTitle.setText(recipeStep.getShortDescription());
         stepDetails.setText(recipeStep.getDescription());
 
         return view;
     }
 
+    /**
+     * initializes the exoplayer
+     * @param videoUri uri for the video that is going to be played
+     */
     private void initializeExoplayer(Uri videoUri) {
         if (exoPlayer == null) {
-
             TrackSelector trackSelector = new DefaultTrackSelector();
             LoadControl loadControl = new DefaultLoadControl();
-
             exoPlayer = ExoPlayerFactory.newSimpleInstance(this.getContext(), trackSelector, loadControl);
-
             simpleExoPlayerView.setPlayer(exoPlayer);
-
             String userAgent = Util.getUserAgent(getActivity(), "Bakit");
-
             MediaSource mediaSource = new ExtractorMediaSource(videoUri, new DefaultDataSourceFactory(Objects.requireNonNull(getActivity()), userAgent), new DefaultExtractorsFactory(), null, null);
-
             exoPlayer.prepare(mediaSource);
             exoPlayer.setPlayWhenReady(true);
         }
-
     }
 
     public void releasePlayer() {
