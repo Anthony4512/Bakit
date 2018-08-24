@@ -71,6 +71,7 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
         if(savedInstanceState != null) {
             stepList = savedInstanceState.getParcelableArrayList("stepList");
             currentRecipe = savedInstanceState.getParcelable("recipe");
+            isTablet = savedInstanceState.getBoolean("isTablet");
         }
     }
 
@@ -115,7 +116,7 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
             parent.setLayoutParams(params);
 
             if(currentRecipe != null) {
-                navigator.addSecondFragment(RecipeStepDetailsFragment.newInstance(currentRecipe.getSteps(), stepPosition));
+                navigator.addSecondFragment(RecipeStepDetailsFragment.newInstance(currentRecipe, stepPosition, isTablet));
             }
 
         }
@@ -132,6 +133,15 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
     @Override
     public void onDetach() {
         super.onDetach();
+        stepList = null;
+        ingredients = null;
+        currentRecipe = null;
+
+        recipeRecyclerView = null;
+
+        navigator = null;
+
+        manager = null;
     }
 
     @Override
@@ -140,10 +150,10 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
         this.stepPosition = position;
         if(isTablet && Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
                 Configuration.ORIENTATION_LANDSCAPE) {
-            navigator.addSecondFragment(RecipeStepDetailsFragment.newInstance(stepList, position));
+            navigator.addSecondFragment(RecipeStepDetailsFragment.newInstance(currentRecipe, position, isTablet));
         }
         else {
-            navigator.navigateTo(RecipeStepDetailsFragment.newInstance(stepList, position));
+            navigator.navigateTo(RecipeStepDetailsFragment.newInstance(currentRecipe, position, isTablet));
         }
     }
 
@@ -152,6 +162,7 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList("stepsList", stepList);
         outState.putParcelable("recipe", currentRecipe);
+        outState.putBoolean("isTablet", isTablet);
     }
 
 

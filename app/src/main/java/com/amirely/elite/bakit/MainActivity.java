@@ -62,4 +62,10 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isTablet = findViewById(R.id.tablet_main_layout) != null;
+    }
 }

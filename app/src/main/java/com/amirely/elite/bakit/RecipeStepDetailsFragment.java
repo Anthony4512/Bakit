@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.amirely.elite.bakit.models.Recipe;
 import com.amirely.elite.bakit.models.RecipeStep;
 import com.amirely.elite.bakit.utils.Navigator;
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -46,6 +48,8 @@ public class RecipeStepDetailsFragment extends Fragment {
 
     ArrayList<RecipeStep> stepList;
 
+    Recipe recipe;
+
     int position;
 
     boolean isTablet;
@@ -55,32 +59,50 @@ public class RecipeStepDetailsFragment extends Fragment {
     }
 
 
-    public static RecipeStepDetailsFragment newInstance(ArrayList<RecipeStep> steps, int position) {
+    public static RecipeStepDetailsFragment newInstance(Recipe recipe, int position, boolean isTablet) {
         RecipeStepDetailsFragment fragment = new RecipeStepDetailsFragment();
-        if(steps != null) {
-            fragment.recipeStep = steps.get(position);
-            fragment.stepList = steps;
+        if(recipe != null) {
+            fragment.recipeStep = recipe.getSteps().get(position);
+            fragment.stepList = recipe.getSteps();
             fragment.position = position;
+            fragment.recipe = recipe;
+            fragment.isTablet = isTablet;
         }
         return fragment;
     }
 
-    public static RecipeStepDetailsFragment newInstance(ArrayList<RecipeStep> steps, int position, boolean isTablet) {
-        RecipeStepDetailsFragment fragment = new RecipeStepDetailsFragment();
-//        fragment.recipeStep = steps.get(position);
-        fragment.stepList = steps;
-        fragment.position = position;
-        fragment.isTablet = isTablet;
 
-        return fragment;
-    }
+//    public static RecipeStepDetailsFragment newInstance(ArrayList<RecipeStep> steps, int position) {
+//        RecipeStepDetailsFragment fragment = new RecipeStepDetailsFragment();
+//        if(steps != null) {
+//            fragment.recipeStep = steps.get(position);
+//            fragment.stepList = steps;
+//            fragment.position = position;
+//        }
+//        return fragment;
+//    }
+
+//    public static RecipeStepDetailsFragment newInstance(ArrayList<RecipeStep> steps, int position, boolean isTablet) {
+//        RecipeStepDetailsFragment fragment = new RecipeStepDetailsFragment();
+////        fragment.recipeStep = steps.get(position);
+//        fragment.stepList = steps;
+//        fragment.position = position;
+//        fragment.isTablet = isTablet;
+//
+//        return fragment;
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
-            recipeStep = savedInstanceState.getParcelable("recipeStep");
-            stepList = savedInstanceState.getParcelableArrayList("stepList");
+            this.isTablet = savedInstanceState.getBoolean("isTablet");
+            this.recipeStep = savedInstanceState.getParcelable("recipeStep");
+//            this.stepList = savedInstanceState.getParcelableArrayList("stepList");
+            this.recipe = savedInstanceState.getParcelable("currentRecipe");
+            assert recipe != null;
+            this.stepList = recipe.getSteps();
+
         }
     }
 
@@ -102,15 +124,18 @@ public class RecipeStepDetailsFragment extends Fragment {
 
 
 
-        if(isTablet || Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
-                Configuration.ORIENTATION_LANDSCAPE) {
+        if(isTablet) {
             FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) simpleExoPlayerView.getLayoutParams();
             params.width = MATCH_PARENT;
             params.height = 600;
             simpleExoPlayerView.setLayoutParams(params);
 
-            backImgButton.setVisibility(View.GONE);
-            forwardImgButton.setVisibility(View.GONE);
+            if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
+                    Configuration.ORIENTATION_LANDSCAPE){
+
+                backImgButton.setVisibility(View.GONE);
+                forwardImgButton.setVisibility(View.GONE);
+            }
         }
 
 
@@ -146,7 +171,14 @@ public class RecipeStepDetailsFragment extends Fragment {
     private void getNextStep() {
         if(position < stepList.size()-1) {
             Navigator navigator = new Navigator(this.getFragmentManager());
-            navigator.navigateTo(RecipeStepDetailsFragment.newInstance(stepList, position + 1));
+            if(isTablet && Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
+                    Configuration.ORIENTATION_LANDSCAPE) {
+                navigator.addSecondFragment(RecipeStepDetailsFragment.newInstance(this.recipe, position + 1, isTablet));
+            }
+            else {
+                navigator.navigateTo(RecipeStepDetailsFragment.newInstance(this.recipe, position + 1, isTablet));
+            }
+//            navigator.navigateTo(RecipeStepDetailsFragment.newInstance(stepList, position + 1));
         }
         else {
             Toast.makeText(getActivity(), "No more steps available", Toast.LENGTH_SHORT).show();
@@ -187,13 +219,26 @@ public class RecipeStepDetailsFragment extends Fragment {
         if (exoPlayer != null) {
             releasePlayer();
         }
+        simpleExoPlayerView = null;
+
+        exoPlayer = null;
+
+        recipeStep = null;
+
+        stepList = null;
+
+        recipe = null;
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("stepsList", stepList);
+        outState.putParcelable("currentRecipe", recipe);
         outState.putParcelable("recipeStep", recipeStep);
-        outState.putParcelableArrayList("stepList", stepList);
+        outState.putBoolean("isTablet", isTablet);
+//        outState.putParcelableArrayList("stepList", stepList);
+//        outState.putParcelable("currentRecipe", recipe);
     }
 
 
@@ -211,7 +256,10 @@ public class RecipeStepDetailsFragment extends Fragment {
     public void goStepBack() {
         if(position > 1) {
             Navigator navigator = new Navigator(this.getFragmentManager());
-            navigator.navigateTo(RecipeStepDetailsFragment.newInstance(stepList, position - 1));
+
+            navigator.navigateTo(RecipeStepDetailsFragment.newInstance(this.recipe, position - 1, isTablet));
+
+//            navigator.navigateTo(RecipeStepDetailsFragment.newInstance(stepList, position - 1));
         }
         else {
             Toast.makeText(getActivity(), "No more steps available", Toast.LENGTH_SHORT).show();
