@@ -55,11 +55,8 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
     public void onBindViewHolder(@NonNull StepsViewHolder holder, int position) {
         if(position == 0) {
             String ingredientText = "";
-            int i = 0;
             for (RecipeIngredient ingredient : ingredients) {
-                i++;
                 ingredientText += ingredient.getQuantity() + " " + ingredient.getMeasure() + " " + ingredient.getIngredient() + "\n";
-
             }
             holder.ingredientsTv.setText(ingredientText);
         }
@@ -77,7 +74,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
     }
 
     interface OnStepClickListener {
-        void onStepClicked(RecipeStep recipeStep);
+        void onStepClicked(int position);
     }
 
     class StepsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -107,7 +104,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
 
         @Override
         public void onClick(View view) {
-            onStepClickListener.onStepClicked(recipeStep);
+            onStepClickListener.onStepClicked(getAdapterPosition());
         }
     }
 }

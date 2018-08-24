@@ -37,13 +37,6 @@ public class MainActivityViewModel extends ViewModel{
         return recipeList;
     }
 
-//    public LiveData<List<RecipeStep>> getStepsFromRecipe(Recipe recipe) {
-//        if()
-//    }
-
-
-
-
     private void fetchRecipeList() {
 
         Log.d("FETCH MOVIES", "Fetch movies has been called");
