@@ -158,7 +158,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnRecipeC
     public void onRecipeClicked(Recipe recipe) {
         manager = getFragmentManager();
         navigator = new Navigator(manager);
-        navigator.navigateTo(RecipeStepsFragment.newInstance(recipe, isTablet));
+        navigator.navigateTo(RecipeStepsFragment.newInstance(recipe));
     }
 
     @Override

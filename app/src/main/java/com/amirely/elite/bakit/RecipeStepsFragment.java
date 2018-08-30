@@ -10,11 +10,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amirely.elite.bakit.models.Recipe;
 import com.amirely.elite.bakit.models.RecipeIngredient;
@@ -45,17 +47,18 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
 
     boolean isTablet;
 
+    boolean isPortrait;
+
     public RecipeStepsFragment() {
         // Required empty public constructor
     }
 
-    public static RecipeStepsFragment newInstance(Recipe recipe, boolean isTablet) {
+    public static RecipeStepsFragment newInstance(Recipe recipe) {
 
         RecipeStepsFragment fragment = new RecipeStepsFragment();
         fragment.stepList = recipe.getSteps();
         fragment.ingredients = recipe.getIngredients();
         fragment.currentRecipe = recipe;
-        fragment.isTablet = isTablet;
         return fragment;
     }
 
@@ -63,6 +66,8 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         stepPosition = 1;
+        isTablet = Objects.requireNonNull(getActivity()).findViewById(R.id.tablet_main_layout) != null;
+        isPortrait = Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
 
         manager = getFragmentManager();
 
@@ -104,20 +109,9 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
         recipeRecyclerView.setLayoutManager(layoutManager);
         recipeRecyclerView.setAdapter(stepsAdapter);
 
-
-        if(isTablet && Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
-                Configuration.ORIENTATION_LANDSCAPE) {
-            LinearLayout parent = getActivity().findViewById(R.id.main_fragment_container);
-
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    800,
-                    MATCH_PARENT);
-
-            parent.setLayoutParams(params);
-
-            if(currentRecipe != null) {
-                navigator.addSecondFragment(RecipeStepDetailsFragment.newInstance(currentRecipe, stepPosition, isTablet));
-            }
+        resizeScreen();
+        if(!isPortrait && isTablet) {
+            navigator.addSecondFragment(RecipeStepDetailsFragment.newInstance(currentRecipe, stepPosition, isTablet));
 
         }
 
@@ -148,8 +142,8 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
     public void onStepClicked(int position) {
 
         this.stepPosition = position;
-        if(isTablet && Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
-                Configuration.ORIENTATION_LANDSCAPE) {
+        if(isTablet && !isPortrait) {
+            resizeScreen();
             navigator.addSecondFragment(RecipeStepDetailsFragment.newInstance(currentRecipe, position, isTablet));
         }
         else {
@@ -171,5 +165,67 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.OnStep
         super.onResume();
         Objects.requireNonNull(getActivity()).setTitle(currentRecipe.getName());
 
+    }
+
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+
+
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+            isPortrait = false;
+
+            resizeScreen();
+
+            Log.d("ORIENTATION", "LANDSCAPE");
+
+            if(isTablet) {
+                Log.d("ORIENTATION", "LANDSCAPE TABLET");
+
+
+
+                if(currentRecipe != null) {
+                    navigator.addSecondFragment(RecipeStepDetailsFragment.newInstance(currentRecipe, stepPosition, isTablet));
+                }
+
+            }
+
+            Toast.makeText(getActivity(), "landscape", Toast.LENGTH_SHORT).show();
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+
+            isPortrait = true;
+
+            resizeScreen();
+
+            Log.d("ORIENTATION", "PORTRAIT");
+            Toast.makeText(getActivity(), "portrait", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    public void resizeScreen() {
+        if(isTablet) {
+            if (isPortrait) {
+
+                LinearLayout parent = Objects.requireNonNull(getActivity()).findViewById(R.id.main_fragment_container);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        MATCH_PARENT,
+                        MATCH_PARENT);
+                parent.setLayoutParams(params);
+            } else {
+                LinearLayout parent = Objects.requireNonNull(getActivity()).findViewById(R.id.main_fragment_container);
+
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        800,
+                        MATCH_PARENT);
+                parent.setLayoutParams(params);
+
+            }
+        }
     }
 }
