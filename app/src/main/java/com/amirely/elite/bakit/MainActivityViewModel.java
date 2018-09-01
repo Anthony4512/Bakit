@@ -25,7 +25,7 @@ public class MainActivityViewModel extends ViewModel{
     private MutableLiveData<List<Recipe>> recipeList;
     private RecipeApi recipeApi;
 
-    MainActivityViewModel() {
+    public MainActivityViewModel() {
         recipeApi = NetworkService.create(RecipeApi.class);
     }
 
@@ -36,13 +36,6 @@ public class MainActivityViewModel extends ViewModel{
         }
         return recipeList;
     }
-
-//    public LiveData<List<RecipeStep>> getStepsFromRecipe(Recipe recipe) {
-//        if()
-//    }
-
-
-
 
     private void fetchRecipeList() {
 
@@ -68,10 +61,5 @@ public class MainActivityViewModel extends ViewModel{
             }
         });
     }
-
-
-
-
-
 
 }
