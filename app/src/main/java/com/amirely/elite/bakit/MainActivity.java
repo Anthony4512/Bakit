@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 //
 //        }
 
-        if(getSupportFragmentManager().getBackStackEntryCount() <= 1) {
+        if(getSupportFragmentManager().getBackStackEntryCount() < 1) {
             finish();
         }
         else {

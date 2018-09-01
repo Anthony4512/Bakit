@@ -6,15 +6,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +30,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -54,6 +52,11 @@ public class RecipeStepDetailsFragment extends Fragment {
 
     boolean isTablet;
 
+    boolean isPortrait;
+
+    ImageButton backImgButton;
+    ImageButton forwardImgButton;
+
     public RecipeStepDetailsFragment() {
 
     }
@@ -71,30 +74,11 @@ public class RecipeStepDetailsFragment extends Fragment {
         return fragment;
     }
 
-
-//    public static RecipeStepDetailsFragment newInstance(ArrayList<RecipeStep> steps, int position) {
-//        RecipeStepDetailsFragment fragment = new RecipeStepDetailsFragment();
-//        if(steps != null) {
-//            fragment.recipeStep = steps.get(position);
-//            fragment.stepList = steps;
-//            fragment.position = position;
-//        }
-//        return fragment;
-//    }
-
-//    public static RecipeStepDetailsFragment newInstance(ArrayList<RecipeStep> steps, int position, boolean isTablet) {
-//        RecipeStepDetailsFragment fragment = new RecipeStepDetailsFragment();
-////        fragment.recipeStep = steps.get(position);
-//        fragment.stepList = steps;
-//        fragment.position = position;
-//        fragment.isTablet = isTablet;
-//
-//        return fragment;
-//    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        isPortrait = Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
+
         if(savedInstanceState != null) {
             this.isTablet = savedInstanceState.getBoolean("isTablet");
             this.recipeStep = savedInstanceState.getParcelable("recipeStep");
@@ -116,38 +100,11 @@ public class RecipeStepDetailsFragment extends Fragment {
         ImageView noVideoImageView = view.findViewById(R.id.no_video_image);
 
 
-        ImageButton backImgButton = view.findViewById(R.id.back_button_details);
+        backImgButton = view.findViewById(R.id.back_button_details);
         backImgButton.setOnClickListener(view1 -> goStepBack());
 
-        ImageButton forwardImgButton = view.findViewById(R.id.forward_button_details);
+        forwardImgButton = view.findViewById(R.id.forward_button_details);
         forwardImgButton.setOnClickListener(view1 -> getNextStep());
-
-
-
-        if(isTablet) {
-            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) simpleExoPlayerView.getLayoutParams();
-            params.width = MATCH_PARENT;
-            params.height = 600;
-            simpleExoPlayerView.setLayoutParams(params);
-
-            if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
-                    Configuration.ORIENTATION_LANDSCAPE){
-
-                backImgButton.setVisibility(View.GONE);
-                forwardImgButton.setVisibility(View.GONE);
-            }
-        }
-
-
-        if (!isTablet && Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
-                Configuration.ORIENTATION_LANDSCAPE) {
-            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) simpleExoPlayerView.getLayoutParams();
-            params.width = MATCH_PARENT;
-            params.height = MATCH_PARENT;
-            simpleExoPlayerView.setLayoutParams(params);
-
-            Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).hide();
-        }
 
         if (recipeStep.getVideoURL() == null || recipeStep.getVideoURL().isEmpty()) {
             simpleExoPlayerView.setVisibility(View.GONE);
@@ -163,6 +120,21 @@ public class RecipeStepDetailsFragment extends Fragment {
         TextView stepDetails = view.findViewById(R.id.step_details_description);
         stepTitle.setText(recipeStep.getShortDescription());
         stepDetails.setText(recipeStep.getDescription());
+
+
+        if (isTablet) {
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) simpleExoPlayerView.getLayoutParams();
+            params.width = MATCH_PARENT;
+            params.height = 800;
+            simpleExoPlayerView.setLayoutParams(params);
+
+            if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
+                    Configuration.ORIENTATION_LANDSCAPE) {
+
+                backImgButton.setVisibility(View.GONE);
+                forwardImgButton.setVisibility(View.GONE);
+            }
+        }
 
 
         return view;
@@ -237,8 +209,6 @@ public class RecipeStepDetailsFragment extends Fragment {
         outState.putParcelable("currentRecipe", recipe);
         outState.putParcelable("recipeStep", recipeStep);
         outState.putBoolean("isTablet", isTablet);
-//        outState.putParcelableArrayList("stepList", stepList);
-//        outState.putParcelable("currentRecipe", recipe);
     }
 
 
@@ -265,6 +235,50 @@ public class RecipeStepDetailsFragment extends Fragment {
             Toast.makeText(getActivity(), "No more steps available", Toast.LENGTH_SHORT).show();
         }
     }
+
+
+
+
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig) {
+//        super.onConfigurationChanged(newConfig);
+//
+//
+//
+//        // Checks the orientation of the screen
+//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//            if(isTablet) {
+//                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) simpleExoPlayerView.getLayoutParams();
+//                params.width = MATCH_PARENT;
+//                params.height = 600;
+//                simpleExoPlayerView.setLayoutParams(params);
+//
+//                if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation ==
+//                        Configuration.ORIENTATION_LANDSCAPE){
+//
+//                    backImgButton.setVisibility(View.GONE);
+//                    forwardImgButton.setVisibility(View.GONE);
+//                }
+//            }
+//            else {
+//                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) simpleExoPlayerView.getLayoutParams();
+//
+//                params.width = MATCH_PARENT;
+//                params.height = MATCH_PARENT;
+//                simpleExoPlayerView.setLayoutParams(params);
+//
+//                Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).hide();
+//
+//            }
+//
+//
+//
+//        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+//
+//
+//
+//        }
+//    }
 
 
 
